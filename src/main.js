@@ -1,6 +1,7 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
 import { OrbitControls } from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
-
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+      
       // Scene
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -19,6 +20,16 @@ import { OrbitControls } from '../node_modules/three/examples/jsm/controls/Orbit
       const loader = new THREE.TextureLoader();
       const texture = loader.load( '../image.png' );
       texture.colorSpace = THREE.SRGBColorSpace;
+
+      //gltf 3d obj loader
+     const gltfLoader = new GLTFLoader();
+
+     gltfLoader.load('../Intergalactic_Spaceships_Version_2.gltf', function(gltf) {
+     scene.add(gltf.scene);
+     }, 
+     undefined, function(error) {
+        console.error(error);
+     });
 
       // Sphere geometry
       const geometry = new THREE.SphereGeometry(1, 32, 32);

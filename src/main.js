@@ -4,18 +4,19 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
       
       // Scene
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight*1.5, 0.1, 1000);
      
       // Renderer
       const renderer = new THREE.WebGLRenderer({ antialias: true });
       const controls = new OrbitControls( camera, renderer.domElement );
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0xffffff); // white background
+      renderer.setSize(window.innerWidth, window.innerHeight/1.5);
+      renderer.setClearColor(0x1D1D1D); // background color
       document.body.appendChild(renderer.domElement);
 
       // Camera
-      camera.position.set(3, 3, 5);
-      camera.lookAt(0, 1, 0);
+      camera.position.set(7, 3, 7);
+      camera.lookAt(0, 0, 7);
       controls.update();
       const loader = new THREE.TextureLoader();
       const texture = loader.load( '../image.png' );
@@ -23,37 +24,29 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
       //gltf 3d obj loader
      const gltfLoader = new GLTFLoader();
+     let model;    
 
      gltfLoader.load('../Intergalactic_Spaceships_Version_2.gltf', function(gltf) {
+     model = gltf.scene;
+     gltf.scene.position.set(0,0,0);
      scene.add(gltf.scene);
      }, 
      undefined, function(error) {
         console.error(error);
      });
 
-      // Sphere geometry
-      const geometry = new THREE.SphereGeometry(1, 32, 32);
-      const material = new THREE.MeshStandardMaterial({map: texture});
-      const sphere = new THREE.Mesh(geometry, material);
-      sphere.position.y = 1; // Raise it above the ground
-      scene.add(sphere);
-
-      // Ground plane
-      const planeGeometry = new THREE.PlaneGeometry(20, 20);
-      const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc });
-      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-      plane.rotation.x = -Math.PI / 2; // Rotate to be horizontal
-      scene.add(plane);
-
       // Lights
-      const ambientLight = new THREE.AmbientLight(0x404040); // Soft ambient light
-      const pointLight = new THREE.PointLight(0xffffff, 20, 10);
-      pointLight.position.set(2,2.5,0);
+      const ambientLight = new THREE.AmbientLight(0xffAA37); // Soft ambient light
+      const pointLight = new THREE.PointLight(0xffffff,80,50);
+      pointLight.position.set(3,4,0);
       scene.add(ambientLight, pointLight);
 
       // Animation loop
       function animate() {
         requestAnimationFrame(animate);
+        //spin ship 
+        if(model){model.rotation.y -= 0.002;}
+
         controls.update();
         renderer.render(scene, camera);
       }
@@ -64,6 +57,6 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(window.innerWidth, window.innerHeight/1.5);
       });
 
